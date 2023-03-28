@@ -12,7 +12,6 @@ function App() {
           Multi-step Upload File Wizard
         </h1>
       </div>
-
       <MainPage></MainPage>
       <div></div>
     </div>

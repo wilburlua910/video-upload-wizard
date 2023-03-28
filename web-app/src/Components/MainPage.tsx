@@ -5,6 +5,8 @@ import StepTwo from "./TermsAndConditionForm";
 import TermsAndConditionForm from "./TermsAndConditionForm";
 
 type FormData = {
+  videoUrl: string;
+  videoFileName: string;
   videoTitle: string;
   videoStartDateTime: string;
   videoLocation?: string;
@@ -12,6 +14,8 @@ type FormData = {
 };
 
 const INITIAL_DATA: FormData = {
+  videoUrl: "",
+  videoFileName: "",
   videoTitle: "",
   videoStartDateTime: "",
   videoLocation: "",
@@ -20,12 +24,40 @@ const INITIAL_DATA: FormData = {
 
 export default function MainPage() {
   const [data, setData] = useState(INITIAL_DATA);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const updateData = (updatedFields: Partial<FormData>) => {
     setData((oldFields) => {
       return { ...oldFields, ...updatedFields };
     });
   };
+
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
+  };
+
+  const sendData = () => {
+    console.log(selectedFile);
+    var formData: any = new FormData();
+    const xhr = new XMLHttpRequest();
+
+    formData.append("videoFile", selectedFile);
+    formData.append("videoTitle", data.videoTitle);
+    formData.append("videoStartDateTime", data.videoStartDateTime);
+    formData.append("videoLocation", data.videoLocation);
+
+    xhr.open("POST", "http://localhost:3001/sendVideo/uploadFile", true);
+    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+
+    xhr.send(formData);
+  };
+
+  const uploadToServer = () => {
+    data.hasAgreedTermsCondition
+      ? sendData()
+      : alert("Please View and accept Terms and Condition");
+  };
+
   const {
     step,
     steps,
@@ -37,6 +69,7 @@ export default function MainPage() {
   } = useMultistepForm([
     <UploadVideoDetailForm
       {...data}
+      onFileSelected={handleFileSelect}
       updateData={updateData}
     ></UploadVideoDetailForm>,
     <TermsAndConditionForm
@@ -47,7 +80,7 @@ export default function MainPage() {
 
   const onSubmitHandler = (e: FormEvent) => {
     e.preventDefault();
-    proceedStage();
+    isLastStep ? uploadToServer() : proceedStage();
   };
 
   return (
@@ -91,7 +124,6 @@ export default function MainPage() {
               Back
             </button>
           )}
-
           <button type="submit">{isLastStep ? "Submit" : "Next"}</button>
         </div>
       </form>

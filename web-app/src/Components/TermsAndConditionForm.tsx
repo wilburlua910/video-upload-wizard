@@ -13,17 +13,20 @@ type TermsAndConditionFormProps = TermsAndConditionFormDetails & {
 };
 
 export default function TermsAndConditionForm({
-  hasAgreedTermsCondition,
   updateData,
 }: TermsAndConditionFormProps) {
   const [open, setOpen] = useState(false);
+  const onCheckBoxClicked = (e: any) => {
+    updateData({
+      hasAgreedTermsCondition: e.target.checked,
+    });
+  };
   const cancelButtonRef = useRef(null);
-
   return (
     <FormWrapper title="Step 2 - Terms and Conditions">
       <div className="text-center row-span-3">
         <div>
-          <input type="checkbox" />
+          <input id="cb-terms" type="checkbox" onChange={onCheckBoxClicked} />
           <label>I agree to the terms and conditions</label>
         </div>
 
@@ -160,7 +163,9 @@ export default function TermsAndConditionForm({
                     <button
                       type="button"
                       className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                      onClick={() => setOpen(false)}
+                      onClick={() => {
+                        setOpen(false);
+                      }}
                       ref={cancelButtonRef}
                     >
                       Cancel

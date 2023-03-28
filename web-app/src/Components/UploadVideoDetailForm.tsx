@@ -4,6 +4,8 @@ import { FormWrapper } from "./FormWrapper";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 
 type VideoDetails = {
+  videoUrl: string;
+  videoFileName: string;
   videoTitle: string;
   videoStartDateTime: string;
   videoLocation?: string;
@@ -11,20 +13,28 @@ type VideoDetails = {
 
 type UploadVideoDetailFormProps = VideoDetails & {
   updateData: (updatedFields: Partial<VideoDetails>) => void;
+  onFileSelected: (file: File) => void;
 };
 
 export default function UploadVideoDetailForm({
+  videoUrl,
+  videoFileName,
   videoTitle,
   videoStartDateTime,
   videoLocation,
   updateData,
+  onFileSelected,
 }: UploadVideoDetailFormProps) {
-  const [videoName, setVideoName] = useState(null);
-  const [videoUrl, setVideoUrl] = useState("");
   const [video, setVideo] = useState(null);
 
-  const handleChange = (e: any) => {
-    setVideoName(e.target.files[0].name);
+  const handleFileSelected = (e: any) => {
+    updateData({
+      videoFileName: e.target.files[0].name,
+    });
+    if (e.target.files[0]) {
+      onFileSelected(e.target.files[0]);
+      console.log(e.target.files[0]);
+    }
     setVideo(e.target.files[0]);
   };
 
@@ -35,7 +45,9 @@ export default function UploadVideoDetailForm({
   React.useEffect(() => {
     if (video) {
       importFileandPreview(video).then((res) => {
-        setVideoUrl(res);
+        updateData({
+          videoUrl: res,
+        });
       });
       if (refs.current.video) {
         if (refs.current.video !== null) {
@@ -84,7 +96,7 @@ export default function UploadVideoDetailForm({
                   type="file"
                   className="sr-only"
                   accept="video/mp4,video/x-m4v,video/*"
-                  onChange={handleChange}
+                  onChange={handleFileSelected}
                 />
               </label>
               <p className="pl-1">or drag and drop</p>
@@ -94,7 +106,7 @@ export default function UploadVideoDetailForm({
             </p>
 
             <p className="text-xs leading-5 text-gray-600">
-              File name: {videoName}
+              File name: {videoFileName}
             </p>
           </div>
         </div>
