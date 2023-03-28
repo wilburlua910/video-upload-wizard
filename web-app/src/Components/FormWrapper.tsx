@@ -9,10 +9,9 @@ export function FormWrapper({ title, children }: FormWrapperProps) {
   return (
     <>
       <div className="text-center">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-700 sm:text-3xl p-10">
+        <h2 className="font-mono text-2xl font-bold tracking-tight text-gray-700 sm:text-3xl p-10">
           {title}
         </h2>
-
         <div
           style={{
             display: "grid",

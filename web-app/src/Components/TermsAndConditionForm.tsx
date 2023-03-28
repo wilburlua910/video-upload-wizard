@@ -4,7 +4,18 @@ import { FormWrapper } from "./FormWrapper";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
-export default function FormTwo() {
+type TermsAndConditionFormDetails = {
+  hasAgreedTermsCondition: boolean;
+};
+
+type TermsAndConditionFormProps = TermsAndConditionFormDetails & {
+  updateData: (updatedFields: Partial<TermsAndConditionFormDetails>) => void;
+};
+
+export default function TermsAndConditionForm({
+  hasAgreedTermsCondition,
+  updateData,
+}: TermsAndConditionFormProps) {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
 

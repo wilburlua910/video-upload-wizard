@@ -2,25 +2,20 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 
-//Import functional components from /Components
-import UploadVideo from "./Components/UploadVideo";
-
-import SampleForm from "./Components/SampleForm";
+import MainPage from "./Components/MainPage";
 
 function App() {
   return (
     <div>
       <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+        <h1 className="font-mono text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
           Multi-step Upload File Wizard
         </h1>
       </div>
 
-      {/* <UploadVideo></UploadVideo> */}
-      <SampleForm></SampleForm>
+      <MainPage></MainPage>
       <div></div>
     </div>
   );
 }
-
 export default App;
