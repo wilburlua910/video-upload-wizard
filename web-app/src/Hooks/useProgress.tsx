@@ -49,7 +49,7 @@ export function useProgress() {
         }
       };
 
-      xhr.open("POST", "http://localhost:3001/sendVideo/uploadFile", true);
+      xhr.open("POST", "https://68.183.181.46:3001/sendVideo/uploadFile", true);
       // xhr.setRequestHeader("Content-Type", "multipart/form-data");
       xhr.send(formData);
     }
