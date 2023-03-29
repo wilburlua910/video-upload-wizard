@@ -2,6 +2,7 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import ProgressBar from "./ProgressBar";
+import { useProgress } from "../Hooks/useProgress";
 
 type TermsAndConditionFormDetails = {
   hasAgreedTermsCondition: boolean;
@@ -12,11 +13,15 @@ type TermsAndConditionFormDetails = {
 type TermsAndConditionFormProps = TermsAndConditionFormDetails & {
   progress: number;
   totalByteSent: number;
+  isUploadSuccess: boolean;
+  isError: boolean;
   updateData: (updatedFields: Partial<TermsAndConditionFormDetails>) => void;
 };
 
 export default function TermsAndConditionForm({
   progress,
+  isError,
+  isUploadSuccess,
   totalByteSent,
   updateData,
 }: TermsAndConditionFormProps) {
@@ -33,7 +38,7 @@ export default function TermsAndConditionForm({
       <p className="font-mono text-gray-900 text-2xl font-bold mt-10mb-5 text-center">
         Please view our terms & condition before submission
       </p>
-      <div className="text-center row-span-3 flex flex-row items-center">
+      <div className="text-center row-span-3 flex flex-row mt-10 items-center">
         <input
           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mr-5"
           id="cb-terms"
@@ -62,8 +67,28 @@ export default function TermsAndConditionForm({
         percentComplete={progress}
       ></ProgressBar>
 
-      <span>{`Bytes sent: ${totalByteSent}`}</span>
-
+      {isUploadSuccess ? (
+        <div
+          className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+          role="alert"
+        >
+          <span className="font-medium">Successfully uploaded file! </span>
+          Redirecting you back to home!
+        </div>
+      ) : (
+        <></>
+      )}
+      {isError ? (
+        <div
+          className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <span className="font-medium">Upload Fail</span> Please try submitting
+          again!
+        </div>
+      ) : (
+        <></>
+      )}
       <Transition.Root show={open} as={Fragment}>
         <Dialog
           as="div"

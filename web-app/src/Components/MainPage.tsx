@@ -29,7 +29,8 @@ const INITIAL_DATA: FormData = {
 export default function MainPage() {
   const [data, setData] = useState(INITIAL_DATA);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { upload, currentProgress, byteSent } = useProgress();
+  const { upload, currentProgress, byteSent, isUploadSuccess, isError } =
+    useProgress();
 
   const updateData = (updatedFields: Partial<FormData>) => {
     setData((oldFields) => {
@@ -41,11 +42,11 @@ export default function MainPage() {
     setSelectedFile(file);
   };
 
-  const uploadToServer = () => {
+  const uploadToServer = async () => {
     if (data.hasAgreedTermsCondition) {
-      upload(selectedFile, data);
+      await upload(selectedFile, data);
     } else {
-      alert("Please View and accept Terms and Condition");
+      alert("Please read through and accept Terms and conditions");
     }
   };
 
@@ -67,13 +68,19 @@ export default function MainPage() {
       {...data}
       progress={currentProgress}
       totalByteSent={byteSent}
+      isUploadSuccess={isUploadSuccess}
+      isError={isError}
       updateData={updateData}
     ></TermsAndConditionForm>,
   ]);
 
   const onSubmitHandler = (e: FormEvent) => {
     e.preventDefault();
-    isLastStep ? uploadToServer() : proceedStage();
+    if (data.videoUrl === "") {
+      alert("Please upload a video");
+    } else {
+      isLastStep ? uploadToServer() : proceedStage();
+    }
   };
 
   return (

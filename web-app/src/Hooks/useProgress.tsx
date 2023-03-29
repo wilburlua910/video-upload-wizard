@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export function useProgress() {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [byteSent, setByteSent] = useState(0);
+  const [isUploadSuccess, setIsUploadSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   //Here we do our XHR request
-  function upload(selectedFile: File | null, data: any) {
-    console.log("Upload function");
-
+  async function upload(selectedFile: File | null, data: any) {
     if (selectedFile && data) {
       let formData: any = new FormData();
       const xhr = new XMLHttpRequest();
@@ -31,8 +31,22 @@ export function useProgress() {
         );
       };
 
-      xhr.upload.onload = () => {
-        console.log(`Upload ${xhr.status} ${xhr.response}`);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          const status = xhr.status;
+
+          if (status >= 200 && status < 400) {
+            console.log("Success");
+            setIsUploadSuccess(true);
+            setIsError(false);
+
+            setTimeout(() => window.location.reload(), 5000);
+          } else {
+            console.log("Error");
+            setIsUploadSuccess(false);
+            setIsError(true);
+          }
+        }
       };
 
       xhr.open("POST", "http://localhost:3001/sendVideo/uploadFile", true);
@@ -45,5 +59,7 @@ export function useProgress() {
     upload,
     currentProgress,
     byteSent,
+    isUploadSuccess,
+    isError,
   };
 }
