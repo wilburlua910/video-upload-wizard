@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { importFileandPreview } from "@rajesh896/video-thumbnails-generator";
-import { FormWrapper } from "./FormWrapper";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 
 type VideoDetails = {
@@ -58,38 +57,24 @@ export default function UploadVideoDetailForm({
   }, [video]);
 
   return (
-    <FormWrapper title="Step 1 - Upload File ">
-      <div className="place-items-center">
-        <video
-          style={{
-            maxWidth: 600,
-            justifySelf: "center",
-            maxHeight: 400,
-            transform: "scale(1)",
-            transition: "all 0.3s",
-          }}
-          id="video"
-          ref={(el: any) => (refs.current.video = el)}
-          src={videoUrl}
-        >
-          <source src={videoUrl} type="video/*" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-
-      <div className="col-span-full">
-        <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+    <div className="flex flex-col">
+      <div className="col-span-full pt-5 pb-5">
+        <p className="font-mono text-gray-900 text-2xl font-bold mb-5 text-center">
+          Select File to Upload
+        </p>
+        <p className="font-mono text-gray-900 text-2xl font-bold mb-5 text-center"></p>
+        <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-12">
           <div className="text-center">
             <PhotoIcon
-              className="mx-auto h-12 w-12 text-gray-300"
+              className="mx-auto h-16 w-16 text-gray-400"
               aria-hidden="true"
             />
-            <div className="mt-4 flex text-sm leading-6 text-gray-600">
+            <div className="mt-4 text-md text-gray-600">
               <label
                 htmlFor="file-upload"
-                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                className="relative cursor-pointer rounded-md bg-white font-semibold text-blue-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-blue-600"
               >
-                <span>Upload a file</span>
+                <span className="text-center m-4">Click here to upload</span>
                 <input
                   id="file-upload"
                   name="file-upload"
@@ -99,23 +84,44 @@ export default function UploadVideoDetailForm({
                   onChange={handleFileSelected}
                 />
               </label>
-              <p className="pl-1">or drag and drop</p>
             </div>
-            <p className="text-xs leading-5 text-gray-600">
+            <p className="text-sm leading-5 text-gray-600">
               MP4, MOV, M4V files
             </p>
 
-            <p className="text-xs leading-5 text-gray-600">
-              File name: {videoFileName}
+            <p className="text-sm font-medium leading-5 text-gray-600 mt-5">
+              Selected File Name: {videoFileName}
             </p>
           </div>
         </div>
       </div>
 
+      <div>
+        <video
+          id="video"
+          height={600}
+          ref={(el: any) => (refs.current.video = el)}
+          src={videoUrl}
+        >
+          <source src={videoUrl} type="video/*" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
       <label>
-        <p className="font-mono text-base">Video Title</p>
+        <p className="font-mono text-gray-900 text-2xl font-bold mb-5 mt-10 text-center">
+          Please fill in the video details
+        </p>
+
+        <div className="flex flex-row">
+          <p className="font-mono text-gray-900 text-lg font-bold mb-2">
+            1. Video Title
+          </p>
+          <p className="text-red-600">*</p>
+        </div>
       </label>
       <input
+        className="shadow border rounded mb-5 w-full"
         autoFocus
         required
         type="text"
@@ -128,9 +134,15 @@ export default function UploadVideoDetailForm({
       />
 
       <label>
-        <p className="font-mono text-base">Video Date & Time</p>
+        <div className="flex flex-row">
+          <p className="font-mono text-gray-900 text-lg font-bold mb-2">
+            2. Video Start Date Time
+          </p>
+          <p className="text-red-600">*</p>
+        </div>
       </label>
       <input
+        className="shadow border rounded mb-5 w-full"
         required
         type="datetime-local"
         value={videoStartDateTime.toString()}
@@ -142,9 +154,12 @@ export default function UploadVideoDetailForm({
       />
 
       <label>
-        <p className="font-mono text-base">Video Location</p>
+        <p className="font-mono text-gray-900 text-lg font-bold mb-2">
+          3. Video Location
+        </p>
       </label>
       <input
+        className="shadow border rounded w-full mb-10"
         type="number"
         value={videoLocation}
         onChange={(e) =>
@@ -153,6 +168,6 @@ export default function UploadVideoDetailForm({
           })
         }
       />
-    </FormWrapper>
+    </div>
   );
 }

@@ -1,19 +1,21 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-
+import Footer from "./Components/Footer";
 import MainPage from "./Components/MainPage";
 
 function App() {
   return (
-    <div>
-      <div className="text-center">
-        <h1 className="font-mono text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+    <div className="">
+      <div className="flex flex-col h-screen justify-between">
+        <h1 className="mt-5 font-mono text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl text-center">
           Multi-step Upload File Wizard
         </h1>
+        <MainPage></MainPage>
+
+        <footer className="bg-white dark:bg-gray-900 bottom-0">
+          <Footer></Footer>
+        </footer>
       </div>
-      <MainPage></MainPage>
-      <div></div>
     </div>
   );
 }

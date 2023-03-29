@@ -1,8 +1,8 @@
 import React, { FormEvent, useState } from "react";
 import { useMultistepForm } from "../Hooks/useMultistep";
 import UploadVideoDetailForm from "./UploadVideoDetailForm";
-import StepTwo from "./TermsAndConditionForm";
 import TermsAndConditionForm from "./TermsAndConditionForm";
+import { useProgress } from "../Hooks/useProgress";
 
 type FormData = {
   videoUrl: string;
@@ -11,6 +11,8 @@ type FormData = {
   videoStartDateTime: string;
   videoLocation?: string;
   hasAgreedTermsCondition: boolean;
+  progress: number;
+  totalByteSent: number;
 };
 
 const INITIAL_DATA: FormData = {
@@ -20,11 +22,14 @@ const INITIAL_DATA: FormData = {
   videoStartDateTime: "",
   videoLocation: "",
   hasAgreedTermsCondition: false,
+  progress: 0,
+  totalByteSent: 0,
 };
 
 export default function MainPage() {
   const [data, setData] = useState(INITIAL_DATA);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { upload, currentProgress, byteSent } = useProgress();
 
   const updateData = (updatedFields: Partial<FormData>) => {
     setData((oldFields) => {
@@ -36,26 +41,12 @@ export default function MainPage() {
     setSelectedFile(file);
   };
 
-  const sendData = () => {
-    console.log(selectedFile);
-    var formData: any = new FormData();
-    const xhr = new XMLHttpRequest();
-
-    formData.append("videoFile", selectedFile);
-    formData.append("videoTitle", data.videoTitle);
-    formData.append("videoStartDateTime", data.videoStartDateTime);
-    formData.append("videoLocation", data.videoLocation);
-
-    xhr.open("POST", "http://localhost:3001/sendVideo/uploadFile", true);
-    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-
-    xhr.send(formData);
-  };
-
   const uploadToServer = () => {
-    data.hasAgreedTermsCondition
-      ? sendData()
-      : alert("Please View and accept Terms and Condition");
+    if (data.hasAgreedTermsCondition) {
+      upload(selectedFile, data);
+    } else {
+      alert("Please View and accept Terms and Condition");
+    }
   };
 
   const {
@@ -74,6 +65,8 @@ export default function MainPage() {
     ></UploadVideoDetailForm>,
     <TermsAndConditionForm
       {...data}
+      progress={currentProgress}
+      totalByteSent={byteSent}
       updateData={updateData}
     ></TermsAndConditionForm>,
   ]);
@@ -84,47 +77,31 @@ export default function MainPage() {
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        background: "white",
-        border: "1px solid black",
-        padding: "2rem",
-        margin: "1rem",
-        borderRadius: ".5rem",
-        fontFamily: "Arial",
-      }}
-    >
-      <form onSubmit={onSubmitHandler}>
-        <div
-          style={{
-            position: "absolute",
-            top: ".5rem",
-            right: ".5rem",
-          }}
-        >
-          <p className="font-mono">
-            Stage: {currentIndex + 1} / {steps.length}
+    <div>
+      <form className="max-w-3xl mx-auto px-4" onSubmit={onSubmitHandler}>
+        <div className="text-center mt-3.5">
+          <p className="font-mono text font-bold tracking-tight text-gray-900 sm:text-3xl text-center mb-5">
+            Step: {currentIndex + 1} / {steps.length}
           </p>
         </div>
         {step}
 
-        <div
-          style={{
-            marginTop: "1rem",
-            display: "flex",
-            gap: ".5rem",
-            justifyContent: "flex-end",
-            padding: ".5rem",
-            border: ".5rem",
-          }}
-        >
+        <div className="flex justify-between">
           {!isFirstStep && (
-            <button type="button" onClick={backStage}>
+            <button
+              className="mb-10 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded h-12 w-1/3"
+              type="button"
+              onClick={backStage}
+            >
               Back
             </button>
           )}
-          <button type="submit">{isLastStep ? "Submit" : "Next"}</button>
+          <button
+            className="mb-10 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded h-12 w-1/3"
+            type="submit"
+          >
+            {isLastStep ? "Submit" : `Proceed to Step ${currentIndex + 2}`}
+          </button>
         </div>
       </form>
     </div>
